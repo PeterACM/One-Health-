@@ -69,22 +69,22 @@ export default function EditorControlPanel() {
   };
 
   return (
-    <div className="fixed bottom-6 left-6 z-40 select-none font-sans max-w-sm sm:max-w-md w-full">
+    <div className="fixed bottom-3 left-3 sm:bottom-6 sm:left-6 z-40 select-none font-sans max-w-[280px] sm:max-w-sm w-full">
       <div className="border border-neutral-200 bg-white shadow-2xl rounded-2xl overflow-hidden transition-all duration-300">
         
         {/* Header / Condensed Tab */}
         <div 
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-between p-4 bg-neutral-950 text-white cursor-pointer hover:bg-neutral-900 transition-colors"
+          className="flex items-center justify-between p-2.5 sm:p-4 bg-neutral-950 text-white cursor-pointer hover:bg-neutral-900 transition-colors"
         >
-          <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${isEditMode ? "bg-emerald-400 animate-pulse" : "bg-neutral-500"}`} />
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${isEditMode ? "bg-emerald-400 animate-pulse" : "bg-neutral-500"}`} />
             <div className="text-left leading-none">
-              <span className="text-[9px] uppercase tracking-widest font-mono font-semibold text-neutral-400">Content System</span>
-              <h4 className="text-xs font-bold font-display flex items-center gap-1.5 mt-0.5">
-                Live Website Editor
+              <span className="text-[8px] sm:text-[9px] uppercase tracking-widest font-mono font-semibold text-neutral-400">Content System</span>
+              <h4 className="text-[10px] sm:text-xs font-bold font-display flex items-center gap-1 sm:gap-1.5 mt-0.5 sm:mt-1">
+                Live Editor
                 {editsCount > 0 && (
-                  <span className="px-1.5 py-0.5 bg-emerald-500 text-white text-[9px] font-mono font-bold rounded-full">
+                  <span className="px-1 py-0.5 bg-emerald-500 text-white text-[8px] font-mono font-bold rounded-full">
                     {editsCount} Edits
                   </span>
                 )}
@@ -92,7 +92,7 @@ export default function EditorControlPanel() {
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Quick Toggle Edit Mode */}
             <button
               onClick={(e) => {
@@ -102,24 +102,24 @@ export default function EditorControlPanel() {
               className="text-neutral-300 hover:text-white transition-colors cursor-pointer outline-none"
               title={isEditMode ? "Turn Off Live Edit Mode" : "Turn On Live Edit Mode"}
             >
-              {isEditMode ? <ToggleRight size={24} className="text-emerald-400" /> : <ToggleLeft size={24} />}
+              {isEditMode ? <ToggleRight size={20} className="text-emerald-400 sm:w-6 sm:h-6" /> : <ToggleLeft size={20} className="sm:w-6 sm:h-6" />}
             </button>
             
             <div className="text-neutral-400">
-              {isOpen ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+              {isOpen ? <ChevronDown size={12} className="sm:w-[14px] sm:h-[14px]" /> : <ChevronUp size={12} className="sm:w-[14px] sm:h-[14px]" />}
             </div>
           </div>
         </div>
 
         {/* Expanded panel body */}
         {isOpen && (
-          <div className="p-0 flex flex-col max-h-[480px]">
+          <div className="p-0 flex flex-col max-h-[360px] sm:max-h-[480px]">
             
             {/* Tab selector bar */}
             <div className="flex border-b border-neutral-200 bg-neutral-50/50">
               <button
                 onClick={() => setActiveTab("edits")}
-                className={`flex-1 py-3 text-center text-xs font-semibold border-b-2 transition-all cursor-pointer outline-none ${
+                className={`flex-1 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-semibold border-b-2 transition-all cursor-pointer outline-none ${
                   activeTab === "edits" 
                     ? "border-neutral-900 text-neutral-950 font-bold bg-white" 
                     : "border-transparent text-neutral-500 hover:text-neutral-800"
@@ -130,7 +130,7 @@ export default function EditorControlPanel() {
               
               <button
                 onClick={() => setActiveTab("history")}
-                className={`flex-1 py-3 text-center text-xs font-semibold border-b-2 transition-all cursor-pointer outline-none ${
+                className={`flex-1 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-semibold border-b-2 transition-all cursor-pointer outline-none ${
                   activeTab === "history" 
                     ? "border-neutral-900 text-neutral-950 font-bold bg-white" 
                     : "border-transparent text-neutral-500 hover:text-neutral-800"
@@ -141,7 +141,7 @@ export default function EditorControlPanel() {
 
               <button
                 onClick={() => setActiveTab("pages")}
-                className={`flex-1 py-3 text-center text-xs font-semibold border-b-2 transition-all cursor-pointer outline-none ${
+                className={`flex-1 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-semibold border-b-2 transition-all cursor-pointer outline-none ${
                   activeTab === "pages" 
                     ? "border-neutral-900 text-neutral-950 font-bold bg-white" 
                     : "border-transparent text-neutral-500 hover:text-neutral-800"
@@ -151,7 +151,7 @@ export default function EditorControlPanel() {
               </button>
             </div>
 
-            <div className="p-4 sm:p-5 space-y-4 overflow-y-auto max-h-[380px]">
+            <div className="p-3 sm:p-5 space-y-3 sm:space-y-4 overflow-y-auto max-h-[260px] sm:max-h-[380px]">
               
               {/* TAB 1: ACTIVE EDITS */}
               {activeTab === "edits" && (

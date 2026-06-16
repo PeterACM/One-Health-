@@ -41,7 +41,7 @@ interface TextEditContextType {
 const TextEditContext = createContext<TextEditContextType | undefined>(undefined);
 
 export function TextEditProvider({ children }: { children: React.ReactNode }) {
-  const [isEditMode, setIsEditMode] = useState<boolean>(true);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [edits, setEdits] = useState<Record<string, string>>({});
   const [originalTexts, setOriginalTexts] = useState<Record<string, string>>({});
   const [history, setHistory] = useState<HistoryEntry[]>([]);

@@ -82,13 +82,13 @@ export default function ContactView() {
                 <Compass size={12} className="text-neutral-900 animate-spin" style={{ animationDuration: "12s" }} />
                 <span>MAP PROXY OUTPOSTS</span>
               </span>
-              <span className="text-neutral-900 font-mono text-[10px] font-bold">DURBAN HQ ACTIVE</span>
+              <span className="text-neutral-900 font-mono text-[10px] font-bold">HILLCREST HQ ACTIVE</span>
             </div>
 
             <div className="space-y-1 relative z-10 pointer-events-none">
               <h4 className="text-neutral-950 text-xs font-bold">Mobile Trailer Deployment Matrix</h4>
               <p className="text-neutral-500 text-[10px] leading-relaxed max-w-xs font-semibold">
-                Real-time routing tracking dental trailer coordinates along Durban Township corridors pro-bono.
+                Real-time routing tracking dental trailer coordinates along Hillcrest and surrounding township corridors pro-bono.
               </p>
             </div>
             

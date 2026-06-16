@@ -37,7 +37,7 @@ export default function Header({ activeTab, setActiveTab, onDonateClick }: Heade
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/95 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 sm:h-28 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-28 flex items-center justify-between">
         {/* Logo and Brand */}
         <button
           onClick={() => handleNavClick("about")}
@@ -47,7 +47,7 @@ export default function Header({ activeTab, setActiveTab, onDonateClick }: Heade
           <img
             src={logo}
             alt="One Health Logo"
-            className="h-20 sm:h-24 md:h-26 w-auto object-contain transition-transform duration-200 group-hover:scale-[1.03]"
+            className="h-14 xs:h-16 sm:h-24 md:h-26 w-auto object-contain transition-transform duration-200 group-hover:scale-[1.03]"
             referrerPolicy="no-referrer"
             id="header-logo-img"
           />
@@ -98,7 +98,7 @@ export default function Header({ activeTab, setActiveTab, onDonateClick }: Heade
 
       {/* Mobile Drawer Overlay */}
       {mobileMenuOpen && (
-        <div className="lg:hidden absolute top-24 sm:top-28 left-0 w-full bg-white border-b border-neutral-200 flex flex-col p-4 gap-2 z-40 float-none animate-fadeIn shadow-lg">
+        <div className="lg:hidden absolute top-20 sm:top-28 left-0 w-full bg-white border-b border-neutral-200 flex flex-col p-4 gap-2 z-40 float-none animate-fadeIn shadow-lg">
           {NAV_ITEMS.map((item) => {
             const isActive = activeTab === item.id;
             return (
