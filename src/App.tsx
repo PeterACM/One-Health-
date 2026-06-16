@@ -188,51 +188,59 @@ export default function App() {
             <div className="space-y-4 text-left">
               <div className="flex items-center gap-2 text-neutral-900 font-display font-medium text-lg">
                 <div className="w-2.5 h-2.5 bg-neutral-900 rounded-full" />
-                <span>One Health</span>
+                <EditableText id="footer.brand" element="span">One Health</EditableText>
               </div>
-              <p className="text-neutral-600 text-xs leading-relaxed max-w-sm">
-                Bringing critical dental screens, environmental cleanups, organic farming skills, and spiritual relief to overlooking territories inside Durban township hubs and other countries across Africa.
-              </p>
+              <div className="text-neutral-600 text-xs leading-relaxed max-w-sm">
+                <EditableText id="footer.desc" element="p">
+                  Bringing critical dental screens, environmental cleanups, organic farming skills, and spiritual relief to overlooking territories inside Hillcrest and surrounding township hubs and other countries across Africa.
+                </EditableText>
+              </div>
             </div>
 
             {/* Organizations Columns */}
             <div className="space-y-4 text-left">
-              <h4 className="text-neutral-900 font-display text-xs font-semibold tracking-wider uppercase">Organisation</h4>
+              <h4 className="text-neutral-900 font-display text-xs font-semibold tracking-wider uppercase">
+                <EditableText id="footer.heading1" element="span">Organisation</EditableText>
+              </h4>
               <ul className="space-y-2 text-neutral-600 text-xs font-medium">
-                <li><button onClick={() => { setActiveTab("about"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-950 transition-colors outline-none cursor-pointer">Our story & vision</button></li>
-                <li><button onClick={() => { setActiveTab("about"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-950 transition-colors outline-none cursor-pointer">One Health philosophy</button></li>
-                <li><button onClick={() => { setActiveTab("about"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-950 transition-colors outline-none cursor-pointer">The pioneer team</button></li>
+                <li><button onClick={() => { setActiveTab("about"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-950 transition-colors outline-none cursor-pointer"><EditableText id="footer.link1.1" element="span">Our story & vision</EditableText></button></li>
+                <li><button onClick={() => { setActiveTab("about"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-950 transition-colors outline-none cursor-pointer"><EditableText id="footer.link1.2" element="span">One Health philosophy</EditableText></button></li>
+                <li><button onClick={() => { setActiveTab("about"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-950 transition-colors outline-none cursor-pointer"><EditableText id="footer.link1.3" element="span">The pioneer team</EditableText></button></li>
               </ul>
             </div>
 
             {/* Participation Column */}
             <div className="space-y-4 text-left">
-              <h4 className="text-neutral-900 font-display text-xs font-semibold tracking-wider uppercase">Get Involved</h4>
+              <h4 className="text-neutral-900 font-display text-xs font-semibold tracking-wider uppercase">
+                <EditableText id="footer.heading2" element="span">Get Involved</EditableText>
+              </h4>
               <ul className="space-y-2 text-neutral-600 text-xs font-medium">
-                <li><button onClick={() => setShowGlobalDonation(true)} className="hover:text-neutral-900 transition-colors outline-none cursor-pointer">Direct project feeding</button></li>
-                <li><button onClick={() => { setActiveTab("participate"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-900 transition-colors outline-none cursor-pointer font-semibold text-neutral-900">Volunteer services</button></li>
-                <li><button onClick={() => { setActiveTab("participate"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-900 transition-colors outline-none cursor-pointer">Corporate partnerships</button></li>
-                <li><button onClick={() => { setActiveTab("contact"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-900 transition-colors outline-none cursor-pointer">Referral submission</button></li>
+                <li><button onClick={() => setShowGlobalDonation(true)} className="hover:text-neutral-900 transition-colors outline-none cursor-pointer"><EditableText id="footer.link2.1" element="span">Direct project feeding</EditableText></button></li>
+                <li><button onClick={() => { setActiveTab("participate"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-900 transition-colors outline-none cursor-pointer font-semibold text-neutral-900"><EditableText id="footer.link2.2" element="span">Volunteer services</EditableText></button></li>
+                <li><button onClick={() => { setActiveTab("participate"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-900 transition-colors outline-none cursor-pointer"><EditableText id="footer.link2.3" element="span">Corporate partnerships</EditableText></button></li>
+                <li><button onClick={() => { setActiveTab("contact"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-900 transition-colors outline-none cursor-pointer"><EditableText id="footer.link2.4" element="span">Referral submission</EditableText></button></li>
               </ul>
             </div>
 
             {/* Featured Projects Column */}
             <div className="space-y-4 text-left">
-              <h4 className="text-neutral-900 font-display text-xs font-semibold tracking-wider uppercase">Active Initiatives</h4>
+              <h4 className="text-neutral-900 font-display text-xs font-semibold tracking-wider uppercase">
+                <EditableText id="footer.heading3" element="span">Active Initiatives</EditableText>
+              </h4>
               <ul className="space-y-2 text-neutral-600 text-xs font-medium">
-                <li><button onClick={() => { setActiveTab("projects"); setSelectedProjectId("keepers"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-950 transition-colors outline-none">ToothKeepers screens</button></li>
-                <li><button onClick={() => { setActiveTab("projects"); setSelectedProjectId("zimbabwe"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-950 transition-colors outline-none">Africa surgical missions</button></li>
-                <li><button onClick={() => { setActiveTab("projects"); setSelectedProjectId("maternal"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-950 transition-colors outline-none">Maternal & child aid</button></li>
-                <li><button onClick={() => { setActiveTab("projects"); setSelectedProjectId(null); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="text-neutral-900 font-semibold hover:text-neutral-950 transition-colors">See all initiatives →</button></li>
+                <li><button onClick={() => { setActiveTab("projects"); setSelectedProjectId("keepers"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-950 transition-colors outline-none"><EditableText id="footer.link3.1" element="span">ToothKeepers screens</EditableText></button></li>
+                <li><button onClick={() => { setActiveTab("projects"); setSelectedProjectId("zimbabwe"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-950 transition-colors outline-none"><EditableText id="footer.link3.2" element="span">Africa surgical missions</EditableText></button></li>
+                <li><button onClick={() => { setActiveTab("projects"); setSelectedProjectId("maternal"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-neutral-950 transition-colors outline-none"><EditableText id="footer.link3.3" element="span">Maternal & child aid</EditableText></button></li>
+                <li><button onClick={() => { setActiveTab("projects"); setSelectedProjectId(null); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="text-neutral-900 font-semibold hover:text-neutral-950 transition-colors"><EditableText id="footer.link3.4" element="span">See all initiatives →</EditableText></button></li>
               </ul>
             </div>
 
           </div>
 
           <div className="border-t border-neutral-200 pt-8 mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-neutral-500 text-xs font-mono">
-            <span>© 2026 One Health • Non-Profit Organisation (SA)</span>
+            <span><EditableText id="footer.copyright" element="span">© 2026 One Health • Non-Profit Organisation (SA)</EditableText></span>
             <div className="flex gap-4 items-center">
-              <span>Website designed and developed by Peter</span>
+              <span><EditableText id="footer.credit" element="span">Website designed and developed by Peter</EditableText></span>
             </div>
           </div>
         </div>

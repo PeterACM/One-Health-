@@ -67,7 +67,7 @@ export default function Header({ activeTab, setActiveTab, onDonateClick }: Heade
                     : "text-neutral-500 hover:text-neutral-900"
                 }`}
               >
-                <span>{item.label}</span>
+                <EditableText id={`nav.${item.id}`} element="span">{item.label}</EditableText>
                 {isActive && (
                   <div className="absolute bottom-[-10px] left-4 right-4 h-0.5 bg-neutral-900 rounded-full" />
                 )}
@@ -111,7 +111,7 @@ export default function Header({ activeTab, setActiveTab, onDonateClick }: Heade
                     : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
                 }`}
               >
-                {item.label}
+                <EditableText id={`nav.${item.id}`} element="span">{item.label}</EditableText>
               </button>
             );
           })}
