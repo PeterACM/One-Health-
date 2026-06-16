@@ -6,7 +6,6 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -17,16 +16,16 @@ async function startServer() {
 
   app.use(express.json());
 
-  // API Route for AI Chatbot using high-fidelity local expert intelligence
+  // API Route for AI Chatbot - purely using robust high-fidelity local expert intelligence, perfectly offline and friendly.
   app.post("/api/chat", async (req, res) => {
     try {
       const { message } = req.body;
       const response = resolveLocalResponse(message);
       res.json(response);
     } catch (error) {
-      console.error("AI chat error:", error);
+      console.error("AI chat endpoint root error:", error);
       res.status(500).json({
-        text: "I apologize, I encountered a temporary processing error. Please retry in a moment.",
+        text: "I apologize, I've had a minor interruption. Try asking me another question, or check out our interactive category tabs!",
         navigateTo: null
       });
     }
