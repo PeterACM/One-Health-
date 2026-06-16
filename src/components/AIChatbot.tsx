@@ -84,7 +84,10 @@ export default function AIChatbot() {
       if (data.navigateTo) {
         window.dispatchEvent(
           new CustomEvent("navigation-request", {
-            detail: { tab: data.navigateTo },
+            detail: { 
+              tab: data.navigateTo,
+              project: data.project
+            },
           })
         );
       }
