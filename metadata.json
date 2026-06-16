@@ -1,6 +1,6 @@
 {
   "name": "One Health",
-  "description": "An interactive, premium showcase website for One Health — an organization bringing holistic healing, healthcare, gospel mission, agriculture, and environmental stewardship to South Africa and Zimbabwe.",
+  "description": "An interactive, premium showcase website for One Health — headquartered in Hillcrest, delivering holistic healthcare, mobile dental trailers, agriculture, and gospel missions across South Africa and Zimbabwe.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
