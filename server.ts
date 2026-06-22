@@ -7,14 +7,70 @@ import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
+import fs from "fs";
 
 dotenv.config();
+
+const EDITS_FILE_PATH = path.join(process.cwd(), "persistent_edits.json");
+const HISTORY_FILE_PATH = path.join(process.cwd(), "persistent_history.json");
 
 async function startServer() {
   const app = express();
   const PORT = 3000;
 
   app.use(express.json());
+
+  // API to retrieve database persistent edits of One Health text
+  app.get("/api/edits", (req, res) => {
+    try {
+      if (fs.existsSync(EDITS_FILE_PATH)) {
+        const fileContent = fs.readFileSync(EDITS_FILE_PATH, "utf8");
+        return res.json(JSON.parse(fileContent));
+      }
+      res.json({});
+    } catch (error) {
+      console.error("Error reading persistent edits:", error);
+      res.status(500).json({ error: "Failed to read edits" });
+    }
+  });
+
+  // API to persist master edits of One Health text permanently
+  app.post("/api/edits", (req, res) => {
+    try {
+      const edits = req.body || {};
+      fs.writeFileSync(EDITS_FILE_PATH, JSON.stringify(edits, null, 2), "utf8");
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error writing persistent edits:", error);
+      res.status(500).json({ error: "Failed to save edits" });
+    }
+  });
+
+  // API to retrieve database persistent editing history trail
+  app.get("/api/history", (req, res) => {
+    try {
+      if (fs.existsSync(HISTORY_FILE_PATH)) {
+        const fileContent = fs.readFileSync(HISTORY_FILE_PATH, "utf8");
+        return res.json(JSON.parse(fileContent));
+      }
+      res.json([]);
+    } catch (error) {
+      console.error("Error reading persistent history:", error);
+      res.status(500).json({ error: "Failed to read history" });
+    }
+  });
+
+  // API to persist editing history trail permanently for weeks/months
+  app.post("/api/history", (req, res) => {
+    try {
+      const history = req.body || [];
+      fs.writeFileSync(HISTORY_FILE_PATH, JSON.stringify(history, null, 2), "utf8");
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error writing persistent history:", error);
+      res.status(500).json({ error: "Failed to save history" });
+    }
+  });
 
   // API Route for AI Chatbot - purely using robust high-fidelity local expert intelligence, perfectly offline and friendly.
   app.post("/api/chat", async (req, res) => {

@@ -46,8 +46,34 @@ export function TextEditProvider({ children }: { children: React.ReactNode }) {
   const [originalTexts, setOriginalTexts] = useState<Record<string, string>>({});
   const [history, setHistory] = useState<HistoryEntry[]>([]);
 
-  // Load saved edits and history from localStorage on first render
+  // Synchronizers to write changes to central server-side JSON database
+  const syncEditsToServer = async (newEdits: Record<string, string>) => {
+    try {
+      await fetch("/api/edits", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newEdits)
+      });
+    } catch (e) {
+      console.error("Failed to sync edits to server database:", e);
+    }
+  };
+
+  const syncHistoryToServer = async (newHistory: HistoryEntry[]) => {
+    try {
+      await fetch("/api/history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newHistory)
+      });
+    } catch (e) {
+      console.error("Failed to sync history to server database:", e);
+    }
+  };
+
+  // Load saved edits and history from localStorage, and sync with persistent backend filesystem on first render!
   useEffect(() => {
+    // 1. Initial local bootstrap for zero-latency startup
     try {
       const savedEdits = localStorage.getItem("onehealth_client_edits");
       if (savedEdits) {
@@ -58,11 +84,34 @@ export function TextEditProvider({ children }: { children: React.ReactNode }) {
         setHistory(JSON.parse(savedHistory));
       }
     } catch (e) {
-      console.error("Failed to load content edits or history:", e);
+      console.error("Failed to load content edits or history from cache:", e);
     }
+
+    // 2. Hydrate from permanent central server database to ensure survival for weeks/months/cross-device
+    const hydrateFromDatabase = async () => {
+      try {
+        const [editsRes, historyRes] = await Promise.all([
+          fetch("/api/edits"),
+          fetch("/api/history")
+        ]);
+        if (editsRes.ok) {
+          const serverEdits = await editsRes.json();
+          setEdits(serverEdits);
+          localStorage.setItem("onehealth_client_edits", JSON.stringify(serverEdits));
+        }
+        if (historyRes.ok) {
+          const serverHistory = await historyRes.json();
+          setHistory(serverHistory);
+          localStorage.setItem("onehealth_client_edits_history", JSON.stringify(serverHistory));
+        }
+      } catch (e) {
+        console.error("Failed to hybrid-hydrate edits from permanent server database:", e);
+      }
+    };
+    hydrateFromDatabase();
   }, []);
 
-  // Save changes to localStorage on change
+  // Save changes to localStorage and central server db
   const saveEdits = (newEdits: Record<string, string>) => {
     setEdits(newEdits);
     try {
@@ -70,6 +119,7 @@ export function TextEditProvider({ children }: { children: React.ReactNode }) {
     } catch (e) {
       console.error("Failed to persist content edits:", e);
     }
+    syncEditsToServer(newEdits);
   };
 
   const registerText = (id: string, defaultText: string) => {
@@ -109,6 +159,7 @@ export function TextEditProvider({ children }: { children: React.ReactNode }) {
     } catch (e) {
       console.error("Failed to store history:", e);
     }
+    syncHistoryToServer(nextHistory);
   };
 
   const restoreText = (id: string) => {
@@ -134,6 +185,7 @@ export function TextEditProvider({ children }: { children: React.ReactNode }) {
     } catch (e) {
       console.error("Failed to store history:", e);
     }
+    syncHistoryToServer(nextHistory);
   };
 
   const restoreAll = () => {
@@ -156,6 +208,7 @@ export function TextEditProvider({ children }: { children: React.ReactNode }) {
     } catch (e) {
       console.error("Failed to store history:", e);
     }
+    syncHistoryToServer(nextHistory);
   };
 
   const clearHistory = () => {
@@ -165,6 +218,7 @@ export function TextEditProvider({ children }: { children: React.ReactNode }) {
     } catch (e) {
       console.error("Failed to clear history from storage:", e);
     }
+    syncHistoryToServer([]);
   };
 
   const getEditsList = (): TextEdit[] => {
