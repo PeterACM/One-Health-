@@ -9,6 +9,19 @@
  */
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { db } from "../lib/firebase";
+import { 
+  collection, 
+  doc, 
+  setDoc, 
+  deleteDoc, 
+  onSnapshot, 
+  query, 
+  orderBy, 
+  writeBatch,
+  getDocs,
+  limit
+} from "firebase/firestore";
 
 export interface TextEdit {
   id: string;
@@ -22,6 +35,7 @@ export interface HistoryEntry {
   timestamp: string;
   oldValue: string;
   newValue: string;
+  createdAt?: number;
 }
 
 interface TextEditContextType {
@@ -38,89 +52,185 @@ interface TextEditContextType {
   clearHistory: () => void;
 }
 
+enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: {
+    userId?: string | null;
+    email?: string | null;
+    emailVerified?: boolean | null;
+    isAnonymous?: boolean | null;
+  }
+}
+
+function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errInfo: FirestoreErrorInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    authInfo: {
+      userId: null,
+      email: null,
+      emailVerified: null,
+      isAnonymous: null,
+    },
+    operationType,
+    path
+  };
+  console.error('Firestore Error Details: ', JSON.stringify(errInfo));
+  throw new Error(JSON.stringify(errInfo));
+}
+
 const TextEditContext = createContext<TextEditContextType | undefined>(undefined);
 
 export function TextEditProvider({ children }: { children: React.ReactNode }) {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const [edits, setEdits] = useState<Record<string, string>>({});
-  const [originalTexts, setOriginalTexts] = useState<Record<string, string>>({});
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
-
-  // Synchronizers to write changes to central server-side JSON database
-  const syncEditsToServer = async (newEdits: Record<string, string>) => {
-    try {
-      await fetch("/api/edits", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newEdits)
-      });
-    } catch (e) {
-      console.error("Failed to sync edits to server database:", e);
-    }
-  };
-
-  const syncHistoryToServer = async (newHistory: HistoryEntry[]) => {
-    try {
-      await fetch("/api/history", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newHistory)
-      });
-    } catch (e) {
-      console.error("Failed to sync history to server database:", e);
-    }
-  };
-
-  // Load saved edits and history from localStorage, and sync with persistent backend filesystem on first render!
-  useEffect(() => {
-    // 1. Initial local bootstrap for zero-latency startup
+  const [edits, setEdits] = useState<Record<string, string>>(() => {
     try {
       const savedEdits = localStorage.getItem("onehealth_client_edits");
-      if (savedEdits) {
-        setEdits(JSON.parse(savedEdits));
-      }
-      const savedHistory = localStorage.getItem("onehealth_client_edits_history");
-      if (savedHistory) {
-        setHistory(JSON.parse(savedHistory));
-      }
-    } catch (e) {
-      console.error("Failed to load content edits or history from cache:", e);
+      return savedEdits ? JSON.parse(savedEdits) : {};
+    } catch {
+      return {};
     }
+  });
+  const [originalTexts, setOriginalTexts] = useState<Record<string, string>>({});
+  const [history, setHistory] = useState<HistoryEntry[]>(() => {
+    try {
+      const savedHistory = localStorage.getItem("onehealth_client_edits_history");
+      return savedHistory ? JSON.parse(savedHistory) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [migrationChecked, setMigrationChecked] = useState<boolean>(false);
 
-    // 2. Hydrate from permanent central server database to ensure survival for weeks/months/cross-device
-    const hydrateFromDatabase = async () => {
+  // 1. One-time client-to-cloud legacy edits auto-migration
+  useEffect(() => {
+    const migrateLegacyLocalData = async () => {
       try {
-        const [editsRes, historyRes] = await Promise.all([
-          fetch("/api/edits"),
-          fetch("/api/history")
-        ]);
-        if (editsRes.ok) {
-          const serverEdits = await editsRes.json();
-          setEdits(serverEdits);
-          localStorage.setItem("onehealth_client_edits", JSON.stringify(serverEdits));
+        const migratedFlag = localStorage.getItem("onehealth_migrated_to_firestore_v2");
+        if (migratedFlag === "true") {
+          setMigrationChecked(true);
+          return;
         }
-        if (historyRes.ok) {
-          const serverHistory = await historyRes.json();
-          setHistory(serverHistory);
-          localStorage.setItem("onehealth_client_edits_history", JSON.stringify(serverHistory));
+
+        const savedEditsStr = localStorage.getItem("onehealth_client_edits");
+        const savedHistoryStr = localStorage.getItem("onehealth_client_edits_history");
+
+        if (savedEditsStr) {
+          const localEdits = JSON.parse(savedEditsStr);
+          const editKeys = Object.keys(localEdits);
+          if (editKeys.length > 0) {
+            console.log("Migrating legacy client overrides to Firestore:", editKeys);
+            for (const id of editKeys) {
+              const text = localEdits[id];
+              if (text) {
+                const editDocRef = doc(db, "edits", id);
+                await setDoc(editDocRef, {
+                  text: text,
+                  updatedAt: new Date().toISOString()
+                });
+              }
+            }
+          }
         }
+
+        if (savedHistoryStr) {
+          const localHistory = JSON.parse(savedHistoryStr) as HistoryEntry[];
+          if (localHistory && localHistory.length > 0) {
+            console.log("Migrating legacy history entries to Firestore:", localHistory.length);
+            for (const entry of localHistory) {
+              const entryId = entry.id || `${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+              const entryDocRef = doc(db, "history", entryId);
+              await setDoc(entryDocRef, {
+                id: entryId,
+                textId: entry.textId || "",
+                timestamp: entry.timestamp || "",
+                oldValue: entry.oldValue || "",
+                newValue: entry.newValue || "",
+                createdAt: entry.createdAt || Date.now()
+              });
+            }
+          }
+        }
+
+        localStorage.setItem("onehealth_migrated_to_firestore_v2", "true");
+        console.log("Migration of legacy edits completed successfully!");
       } catch (e) {
-        console.error("Failed to hybrid-hydrate edits from permanent server database:", e);
+        console.error("Legacy client to Firestore migration failed:", e);
+      } finally {
+        setMigrationChecked(true);
       }
     };
-    hydrateFromDatabase();
+
+    migrateLegacyLocalData();
   }, []);
 
-  // Save changes to localStorage and central server db
-  const saveEdits = (newEdits: Record<string, string>) => {
-    setEdits(newEdits);
+  // 2. Listen to 'edits' collection in Firestore in real-time once migration check is complete
+  useEffect(() => {
+    if (!migrationChecked) return;
+
     try {
-      localStorage.setItem("onehealth_client_edits", JSON.stringify(newEdits));
+      const unsubscribe = onSnapshot(collection(db, "edits"), (snapshot) => {
+        const updatedEdits: Record<string, string> = {};
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data && typeof data.text === "string") {
+            updatedEdits[doc.id] = data.text;
+          }
+        });
+        setEdits(updatedEdits);
+        localStorage.setItem("onehealth_client_edits", JSON.stringify(updatedEdits));
+      }, (error) => {
+        handleFirestoreError(error, OperationType.LIST, "edits");
+      });
+      return () => unsubscribe();
     } catch (e) {
-      console.error("Failed to persist content edits:", e);
+      console.error("Failed to start onSnapshot listener for edits:", e);
     }
-    syncEditsToServer(newEdits);
-  };
+  }, [migrationChecked]);
+
+  // 3. Listen to 'history' collection in Firestore in real-time once migration check is complete
+  useEffect(() => {
+    if (!migrationChecked) return;
+
+    try {
+      const q = query(
+        collection(db, "history"), 
+        orderBy("createdAt", "desc"),
+        limit(100)
+      );
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const updatedHistory: HistoryEntry[] = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          updatedHistory.push({
+            id: doc.id,
+            textId: data.textId || "",
+            timestamp: data.timestamp || "",
+            oldValue: data.oldValue || "",
+            newValue: data.newValue || "",
+            createdAt: data.createdAt || 0
+          });
+        });
+        setHistory(updatedHistory);
+        localStorage.setItem("onehealth_client_edits_history", JSON.stringify(updatedHistory));
+      }, (error) => {
+        handleFirestoreError(error, OperationType.LIST, "history");
+      });
+      return () => unsubscribe();
+    } catch (e) {
+      console.error("Failed to start onSnapshot listener for history:", e);
+    }
+  }, [migrationChecked]);
 
   const registerText = (id: string, defaultText: string) => {
     setOriginalTexts((prev) => {
@@ -129,96 +239,151 @@ export function TextEditProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const setEditText = (id: string, newText: string) => {
+  const setEditText = async (id: string, newText: string) => {
     const oldValue = edits[id] !== undefined ? edits[id] : (originalTexts[id] || "");
     const trimmed = newText.trim();
     const original = originalTexts[id] || "";
     
     if (trimmed === oldValue) return; // No true change to save
 
-    const nextEdits = { ...edits };
-    if (!trimmed || trimmed === original) {
-      delete nextEdits[id];
-    } else {
-      nextEdits[id] = trimmed;
-    }
-    saveEdits(nextEdits);
-
-    // Create chronological history entry
-    const entry: HistoryEntry = {
-      id: `${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-      textId: id,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " " + new Date().toLocaleDateString(),
-      oldValue,
-      newValue: trimmed || original,
-    };
-    const nextHistory = [entry, ...history];
-    setHistory(nextHistory);
     try {
-      localStorage.setItem("onehealth_client_edits_history", JSON.stringify(nextHistory));
+      const timestampMs = Date.now();
+      // 1. Update/delete document in the 'edits' Firestore collection
+      const editDocRef = doc(db, "edits", id);
+      if (!trimmed || trimmed === original) {
+        try {
+          await deleteDoc(editDocRef);
+        } catch (e) {
+          handleFirestoreError(e, OperationType.DELETE, `edits/${id}`);
+        }
+      } else {
+        try {
+          await setDoc(editDocRef, {
+            text: trimmed,
+            updatedAt: new Date().toISOString()
+          });
+        } catch (e) {
+          handleFirestoreError(e, OperationType.WRITE, `edits/${id}`);
+        }
+      }
+
+      // 2. Create history entry in Firestore 'history' collection
+      const entryId = `${timestampMs}-${Math.random().toString(36).substring(2, 6)}`;
+      const entryDocRef = doc(db, "history", entryId);
+      try {
+        await setDoc(entryDocRef, {
+          id: entryId,
+          textId: id,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " " + new Date().toLocaleDateString(),
+          oldValue,
+          newValue: trimmed || original,
+          createdAt: timestampMs
+        });
+      } catch (e) {
+        handleFirestoreError(e, OperationType.WRITE, `history/${entryId}`);
+      }
     } catch (e) {
-      console.error("Failed to store history:", e);
+      console.error("Error setting edit text in Firestore:", e);
     }
-    syncHistoryToServer(nextHistory);
   };
 
-  const restoreText = (id: string) => {
+  const restoreText = async (id: string) => {
     const oldValue = edits[id] !== undefined ? edits[id] : (originalTexts[id] || "");
     const original = originalTexts[id] || "";
     if (oldValue === original) return;
 
-    const nextEdits = { ...edits };
-    delete nextEdits[id];
-    saveEdits(nextEdits);
-
-    const entry: HistoryEntry = {
-      id: `${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-      textId: id,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " " + new Date().toLocaleDateString(),
-      oldValue,
-      newValue: original,
-    };
-    const nextHistory = [entry, ...history];
-    setHistory(nextHistory);
     try {
-      localStorage.setItem("onehealth_client_edits_history", JSON.stringify(nextHistory));
+      const timestampMs = Date.now();
+      // 1. Delete the document in the 'edits' Firestore collection
+      const editDocRef = doc(db, "edits", id);
+      try {
+        await deleteDoc(editDocRef);
+      } catch (e) {
+        handleFirestoreError(e, OperationType.DELETE, `edits/${id}`);
+      }
+
+      // 2. Create history entry
+      const entryId = `${timestampMs}-${Math.random().toString(36).substring(2, 6)}`;
+      const entryDocRef = doc(db, "history", entryId);
+      try {
+        await setDoc(entryDocRef, {
+          id: entryId,
+          textId: id,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " " + new Date().toLocaleDateString(),
+          oldValue,
+          newValue: original,
+          createdAt: timestampMs
+        });
+      } catch (e) {
+        handleFirestoreError(e, OperationType.WRITE, `history/${entryId}`);
+      }
     } catch (e) {
-      console.error("Failed to store history:", e);
+      console.error("Error restoring text in Firestore:", e);
     }
-    syncHistoryToServer(nextHistory);
   };
 
-  const restoreAll = () => {
+  const restoreAll = async () => {
     const keys = Object.keys(edits);
     if (keys.length === 0) return;
 
-    const newEntries: HistoryEntry[] = keys.map((id, index) => ({
-      id: `${Date.now()}-${index}-${Math.random().toString(36).substring(2, 4)}`,
-      textId: id,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " " + new Date().toLocaleDateString(),
-      oldValue: edits[id],
-      newValue: originalTexts[id] || "",
-    }));
-
-    saveEdits({});
-    const nextHistory = [...newEntries, ...history];
-    setHistory(nextHistory);
     try {
-      localStorage.setItem("onehealth_client_edits_history", JSON.stringify(nextHistory));
+      const timestampMs = Date.now();
+      const batch = writeBatch(db);
+
+      // 1. Delete all overrides
+      keys.forEach((id) => {
+        const editDocRef = doc(db, "edits", id);
+        batch.delete(editDocRef);
+      });
+
+      // 2. Write history entries
+      keys.forEach((id, index) => {
+        const entryId = `${timestampMs}-${index}-${Math.random().toString(36).substring(2, 4)}`;
+        const entryDocRef = doc(db, "history", entryId);
+        batch.set(entryDocRef, {
+          id: entryId,
+          textId: id,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " " + new Date().toLocaleDateString(),
+          oldValue: edits[id],
+          newValue: originalTexts[id] || "",
+          createdAt: timestampMs + index
+        });
+      });
+
+      try {
+        await batch.commit();
+      } catch (e) {
+        handleFirestoreError(e, OperationType.WRITE, "edits/history-batch");
+      }
     } catch (e) {
-      console.error("Failed to store history:", e);
+      console.error("Error restoring all texts in Firestore batch:", e);
     }
-    syncHistoryToServer(nextHistory);
   };
 
-  const clearHistory = () => {
-    setHistory([]);
+  const clearHistory = async () => {
     try {
-      localStorage.removeItem("onehealth_client_edits_history");
+      let querySnapshot;
+      try {
+        querySnapshot = await getDocs(collection(db, "history"));
+      } catch (e) {
+        handleFirestoreError(e, OperationType.GET, "history");
+      }
+      
+      if (!querySnapshot || querySnapshot.empty) return;
+
+      const batch = writeBatch(db);
+      querySnapshot.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+
+      try {
+        await batch.commit();
+      } catch (e) {
+        handleFirestoreError(e, OperationType.DELETE, "history-batch");
+      }
     } catch (e) {
-      console.error("Failed to clear history from storage:", e);
+      console.error("Error clearing history in Firestore batch:", e);
     }
-    syncHistoryToServer([]);
   };
 
   const getEditsList = (): TextEdit[] => {

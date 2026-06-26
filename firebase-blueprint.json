@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "TextEdit": {
+      "title": "Text Edit",
+      "description": "Represents a single custom text replacement on the website.",
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "The custom overridden text content."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp of when the text was last modified."
+        }
+      },
+      "required": ["text", "updatedAt"]
+    },
+    "HistoryEntry": {
+      "title": "History Entry",
+      "description": "An entry in the audit log tracking text modifications.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique history entry ID."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp of the event."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["edit", "restore", "reset"],
+          "description": "The operation type performed."
+        },
+        "textId": {
+          "type": "string",
+          "description": "The identifier of the text element edited."
+        },
+        "oldValue": {
+          "type": "string",
+          "description": "The previous text value before modification."
+        },
+        "newValue": {
+          "type": "string",
+          "description": "The new text value after modification."
+        }
+      },
+      "required": ["id", "timestamp", "type"]
+    }
+  },
+  "firestore": {
+    "edits/{textId}": {
+      "schema": "TextEdit",
+      "description": "Collection of customized page content text overrides indexed by element ID."
+    },
+    "history/{entryId}": {
+      "schema": "HistoryEntry",
+      "description": "A rolling chronological audit trail of all text overrides made on the platform."
+    }
+  }
+}
