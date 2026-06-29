@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAis3kTau3_g2LITmKjb_3HcEyK_hg5q3E",
@@ -12,5 +12,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore using the custom database ID provided in the configuration
-export const db = getFirestore(app, "ai-studio-onehealth-75cd70a1-e27e-4217-b755-bcfb7060d024");
+// Initialize Firestore using the custom database ID and enable long polling
+// to work seamlessly within restricted iframe environments.
+export const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+}, "ai-studio-onehealth-75cd70a1-e27e-4217-b755-bcfb7060d024");

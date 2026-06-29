@@ -11,7 +11,7 @@ import AboutView from "./components/AboutView";
 import GospelHealthcareView from "./components/GospelHealthcareView";
 import ProjectsView from "./components/ProjectsView";
 import BeneficiariesView from "./components/BeneficiariesView";
-import GalleryView from "./components/GalleryView";
+import StoriesView from "./components/StoriesView";
 import ImpactView from "./components/ImpactView";
 import ParticipateView from "./components/ParticipateView";
 import ContactView from "./components/ContactView";
@@ -165,7 +165,7 @@ export default function App() {
 
           {activeTab === "beneficiaries" && <BeneficiariesView />}
 
-          {activeTab === "gallery" && <GalleryView />}
+          {activeTab === "stories" && <StoriesView />}
 
           {activeTab === "impact" && <ImpactView />}
 

@@ -291,7 +291,7 @@ Here is how I can help you today:
 • **👥 Our Leadership & Team**: Ask about Lesley Naidoo, Ocean Naidoo, or Laura Naidoo.
 • **📍 Coordinates**: Ask where we are located or how to send a referral.
 
-*You can also ask me to navigate! For example, say "take me to projects" or "show gallery" and I will automatically slide you there.*`;
+*You can also ask me to navigate! For example, say "take me to projects" or "show stories" and I will automatically slide you there.*`;
     return { text, navigateTo, project };
   }
 
@@ -347,8 +347,8 @@ Here is how I can help you today:
     if (query.includes("beneficiar") || query.includes("testimonial") || query.includes("patient") || query.includes("feedback")) {
       return { text: "💌 Slide request accepted! Here is our community testimonial stream, from primary schools and township residents.", navigateTo: "beneficiaries" };
     }
-    if (query.includes("gallery") || query.includes("photo") || query.includes("image") || query.includes("video") || query.includes("reel")) {
-      return { text: "📸 Slide request accepted! Opening our Immersive Field Media Gallery highlighting active vans and gardens.", navigateTo: "gallery" };
+    if (query.includes("gallery") || query.includes("story") || query.includes("stories") || query.includes("photo") || query.includes("image") || query.includes("video") || query.includes("reel") || query.includes("mozambique")) {
+      return { text: "📸 Slide request accepted! Opening our interactive Mozambique Stories and Expedition timeline.", navigateTo: "stories" };
     }
     if (query.includes("impact") || query.includes("stat") || query.includes("metric") || query.includes("report")) {
       return { text: "📊 Slide request accepted! Opening our verified Impact & compliance statistics, along with digital audit downloads.", navigateTo: "impact" };
@@ -645,20 +645,18 @@ Our focus is centered on marginalized groups across Durban townships, KwaZulu-Na
     return { text, navigateTo, project };
   }
 
-  // 16. GALLERY / PHOTO / IMAGE / REEL / VIDEO / MULTIMEDIA / SHOW / PIC / PICS / LOOK
-  if (query.includes("gallery") || query.includes("photo") || query.includes("image") || query.includes("reel") || query.includes("video") || query.includes("multimedia") || query.includes("show") || query.includes("pic") || query.includes("pics") || query.includes("look") || query.includes("visual")) {
-    navigateTo = "gallery";
-    text = `📸 **Immersive Field Media Gallery**
+  // 16. STORIES / GALLERY / PHOTO / IMAGE / REEL / VIDEO / MULTIMEDIA / SHOW / PIC / PICS / LOOK / MOZAMBIQUE
+  if (query.includes("stories") || query.includes("story") || query.includes("gallery") || query.includes("photo") || query.includes("image") || query.includes("reel") || query.includes("video") || query.includes("multimedia") || query.includes("show") || query.includes("pic") || query.includes("pics") || query.includes("look") || query.includes("visual") || query.includes("mozambique")) {
+    navigateTo = "stories";
+    text = `📸 **Mission & Expedition Stories**
 
-Explore real visual moments representing One Health's dynamic mobile trailers and community operations:
+Explore real-time visual narratives representing One Health's dynamic cross-border projects and community outposts:
 
-• **Main Subjects**:
-  *  *ToothKeepers Units*: Custom-built dental trailers on location at township schools.
-  *  *Active Clinics*: Clinicians and local leaders delivering professional care on sites.
-  *  *Agricultural Greenwalls*: Vertical compost gardens flourishing under care.
-  *  *Cross-border Africa Missions*: Diagnostic and pop-up stations active.
+• **Featured Timeline**:
+  *  *Mozambique July 2025*: Strategic partnership with The African Christian Fellowship & CAPRO in Namita.
+  *  *Interactive Media Log*: Swipe from left to right to see on-site image snapshots and on-field video documentary clips.
 
-*Explore these high-resolution operational photographs right now in the **Gallery category**!*`;
+*Explore this gorgeous chronological timeline right now in the **Stories category**!*`;
     return { text, navigateTo, project };
   }
 

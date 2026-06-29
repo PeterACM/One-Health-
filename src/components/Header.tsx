@@ -20,7 +20,7 @@ const NAV_ITEMS = [
   { id: "gospel", label: "Gospel & Healthcare" },
   { id: "projects", label: "Projects" },
   { id: "beneficiaries", label: "Beneficiaries" },
-  { id: "gallery", label: "Gallery" },
+  { id: "stories", label: "Stories" },
   { id: "impact", label: "Impact" },
   { id: "participate", label: "Participate" },
   { id: "contact", label: "Contact" }
