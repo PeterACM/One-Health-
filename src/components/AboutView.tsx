@@ -32,7 +32,7 @@ import acffPng from "../assets/ACFF.png";
 // @ts-ignore
 import iKhetheloPng from "../assets/iKhethelo.png";
 // @ts-ignore
-import lesleyPng from "../assets/IMG_8510.png";
+import lesleyPng from "../assets/Dr_Naidoo.png";
 // @ts-ignore
 import oceanPng from "../assets/IMG_8511.png";
 // @ts-ignore
