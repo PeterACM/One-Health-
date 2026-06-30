@@ -189,10 +189,11 @@ export const TESTIMONIALS: Testimonial[] = [
 export const PARTNERS: Partner[] = [
   { name: "Forward Durban", logoText: "FD", type: "Civic Coalition" },
   { name: "Nation Changers", logoText: "NC", type: "Community Empowerment" },
+  { name: "ACFF", logoText: "AF", type: "Global Health Non-Profit" },
   { name: "CityHill Missions", logoText: "CH", type: "Faith Partner" },
   { name: "African Christian Fellowship", logoText: "AC", type: "Network Union" },
   { name: "Lily of the Valley", logoText: "LV", type: "Orphanage Care" },
-  { name: "Ikethelo", logoText: "IK", type: "Children's Home" },
+  { name: "iKhethelo", logoText: "IK", type: "Children's Home" },
   { name: "Philakade Care Home", logoText: "PC", type: "Residential Support" },
   { name: "The Ark", logoText: "TA", type: "Homeless Shelter & Rescue" }
 ];
