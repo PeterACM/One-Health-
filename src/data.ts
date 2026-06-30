@@ -181,7 +181,7 @@ export const TESTIMONIALS: Testimonial[] = [
     quote: "The agricultural skills development was a lifeline for our community center. Before, we paid high prices for spinach and onions. Now, we harvest sweet potatoes, kale, and beets straight from our garden. Our orphans eat organic, nutritious food every single day.",
     stars: 5,
     author: "Sipho Khumalo",
-    role: "Director of Philakade Care Home",
+    role: "Director of iKhethelo Care Home",
     projectTag: "Agricultural Development"
   }
 ];
@@ -191,11 +191,7 @@ export const PARTNERS: Partner[] = [
   { name: "Nation Changers", logoText: "NC", type: "Community Empowerment" },
   { name: "ACFF", logoText: "AF", type: "Global Health Non-Profit" },
   { name: "CityHill Missions", logoText: "CH", type: "Faith Partner" },
-  { name: "African Christian Fellowship", logoText: "AC", type: "Network Union" },
-  { name: "Lily of the Valley", logoText: "LV", type: "Orphanage Care" },
-  { name: "iKhethelo", logoText: "IK", type: "Children's Home" },
-  { name: "Philakade Care Home", logoText: "PC", type: "Residential Support" },
-  { name: "The Ark", logoText: "TA", type: "Homeless Shelter & Rescue" }
+  { name: "iKhethelo", logoText: "IK", type: "Children's Home" }
 ];
 
 export const TEAM: TeamMember[] = [
@@ -254,11 +250,11 @@ export const BENEFICIARIES_SUMMARY = {
   categories: [
     {
       title: "Orphanages & Care Homes",
-      desc: "Providing routine dental checks, primary pediatric medication, and agricultural food gardens to children's shelters such as Lily of the Valley and Ikethelo."
+      desc: "Providing routine dental checks, primary pediatric medication, and agricultural food gardens to children's shelters such as iKhethelo children's home."
     },
     {
       title: "Homeless & Restoration Shelters",
-      desc: "Delivering basic clean clothing, emergency dental relief, chronic medicine reviews, and spiritual encouragement to shelters like The Ark."
+      desc: "Delivering basic clean clothing, emergency dental relief, chronic medicine reviews, and spiritual encouragement to local community shelters."
     },
     {
       title: "Under-Resourced Township Schools",

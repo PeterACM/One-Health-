@@ -74,8 +74,15 @@ interface FirestoreErrorInfo {
 }
 
 function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errMsg = error instanceof Error ? error.message : String(error);
+  const errCode = error && typeof error === "object" && "code" in error ? (error as any).code : "";
+  const isPermissionError = 
+    errCode === "permission-denied" || 
+    errMsg.toLowerCase().includes("permission") || 
+    errMsg.toLowerCase().includes("insufficient");
+
   const errInfo: FirestoreErrorInfo = {
-    error: error instanceof Error ? error.message : String(error),
+    error: errMsg,
     authInfo: {
       userId: null,
       email: null,
@@ -85,8 +92,13 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
     operationType,
     path
   };
-  console.error('Firestore Error Details: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
+
+  if (isPermissionError) {
+    console.error('Firestore Permission Error Details: ', JSON.stringify(errInfo));
+    throw new Error(JSON.stringify(errInfo));
+  } else {
+    console.warn('Firestore Connection/Non-fatal Error Details: ', JSON.stringify(errInfo));
+  }
 }
 
 const TextEditContext = createContext<TextEditContextType | undefined>(undefined);

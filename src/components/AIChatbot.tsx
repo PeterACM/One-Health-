@@ -461,7 +461,7 @@ To combat childhood malnutrition and systemic physical stunting, One Health teac
   *  **180** Community families fully self-sustained with organic greens.
   *  **95** Local trainees certified in smallholder agriculture.
 • **Partners**:
-  Philakade Care Home and other community orphanages directly benefit from fresh beets, sweet potatoes, and kale daily.
+  Local community orphanages directly benefit from fresh beets, sweet potatoes, and kale daily.
 
 *Our **Agricultural and Food initiatives** are highlighted on both our **About** and **Projects** boards.*`;
     return { text, navigateTo, project };
@@ -547,7 +547,7 @@ This network channels private clinical wealth to target extreme public medical p
   }
 
   // 11. PARTNERS / ALLIANCE / ASSOCIATES / FORWARD DURBAN / CITYHILL / NATION CHANGERS / LILY / THE ARK / IKETHELO
-  if (query.includes("partner") || query.includes("alliance") || query.includes("associate") || query.includes("cityhill") || query.includes("durban") || query.includes("nation changers") || query.includes("lily of the valley") || query.includes("ark") || query.includes("ikethelo") || query.includes("philakade")) {
+  if (query.includes("partner") || query.includes("alliance") || query.includes("associate") || query.includes("cityhill") || query.includes("durban") || query.includes("nation changers") || query.includes("ikethelo")) {
     navigateTo = "about";
     text = `🤝 **Invaluable Civic & Faith Alliances**
 
@@ -555,14 +555,11 @@ One Health believes in collaborative community healing. We work hand-in-hand wit
 
 • **Faith Alliances**:
   *  **CityHill Missions**: Collaborates on community resources, counseling outreach loops, and spiritual mentoring.
-  *  **African Christian Fellowship**: Links international clinical volunteers.
 • **Empowerment Partnerships**:
   *  **Nation Changers**: Directs township skills development.
   *  **Forward Durban**: Supports municipal-level civic coordination.
 • **Shelter & Care Operations**:
-  *  **Lily of the Valley** & **Ikethelo**: We construct vegetable walls and provide dental checks for their resident orphans.
-  *  **Philakade Care Home**: Supporting continuous nutritional wellness.
-  *  **The Ark**: Servicing homeless and drug recovery participants.
+  *  **Ikethelo**: We construct vegetable walls and provide dental checks for their resident orphans.
 
 *You can inspect our list of partners on the **About page** which is now active on your screen!*`;
     return { text, navigateTo, project };
@@ -635,7 +632,7 @@ Transparency is a core value at One Health. All dental, medical, agricultural, a
 Our focus is centered on marginalized groups across Durban townships, KwaZulu-Natal, and remote borderlands:
 
 • **Orphanages & Care Centres**:
-  Lily of the Valley and Ikethelo orphanages receive recurring dental checks and organic farming vertical garden frames.
+  Ikethelo orphanage receives recurring dental checks and organic farming vertical garden frames.
 • **Under-Resourced Schools**:
   Primary school teachers report major class participation increases and zero chronic dental pain after ToothKeepers visits.
 • **Township Residents**:

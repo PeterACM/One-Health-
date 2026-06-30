@@ -60,15 +60,15 @@ export default function StoriesView() {
       badge: "Alliance Launch",
       type: "image",
       src: mozambiquePng,
-      description: "One Health officially launched a historic partnership with the African Christian Fellowship and CAPRO. Clinical staff and regional coordinators mapped high-need areas across Namita.",
+      description: "One Health officially launched a historic partnership with CAPRO missions network. Clinical staff and regional coordinators mapped high-need areas across Namita.",
       details: [
         "Co-signed outreach blueprint with CAPRO field leads",
         "Dispatched initial diagnostic dental kits to Namita central hub",
         "Aligned theological counseling and clinical checklists"
       ],
       color: "from-emerald-500 to-teal-600",
-      partnership: "One Health × ACF × CAPRO Co-op",
-      subtitle: "ACF × CAPRO Support"
+      partnership: "One Health × CAPRO Co-op",
+      subtitle: "CAPRO Support"
     },
     {
       id: "2",
@@ -187,7 +187,7 @@ export default function StoriesView() {
           
           <p className="text-neutral-900 text-sm sm:text-lg font-medium leading-relaxed font-sans max-w-2xl mx-auto text-balance">
             <EditableText id="stories.banner.partnership" element="span">
-              One Health in Partnership with The African Christian Fellowship & CAPRO - in Namita Mozambique 🇲🇿 July 2025
+              One Health in Partnership with CAPRO Missions Network - in Namita Mozambique 🇲🇿 July 2025
             </EditableText>
           </p>
           

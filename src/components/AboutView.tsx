@@ -34,7 +34,7 @@ import iKhetheloPng from "../assets/iKhethelo.png";
 // @ts-ignore
 import lesleyPng from "../assets/Dr_Naidoo.png";
 // @ts-ignore
-import oceanPng from "../assets/IMG_8511.png";
+import oceanPng from "../assets/ocean_naidoo.png";
 // @ts-ignore
 import lauraPng from "../assets/IMG_8513.png";
 
