@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTextEdit } from "./TextEditContext";
 import { 
   Settings, 
@@ -33,9 +33,23 @@ export default function EditorControlPanel() {
     clearHistory 
   } = useTextEdit();
   
+  const [isVisible, setIsVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"edits" | "history" | "pages">("edits");
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Toggle Live Editor visibility with Ctrl + Alt + E
+      if ((e.ctrlKey || e.metaKey) && e.altKey && e.key.toLowerCase() === "e") {
+        setIsVisible(prev => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   const activeEdits = getEditsList();
   const editsCount = activeEdits.length;
@@ -67,6 +81,10 @@ export default function EditorControlPanel() {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
+
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-3 left-3 sm:bottom-6 sm:left-6 z-40 select-none font-sans max-w-[280px] sm:max-w-sm w-full">
