@@ -229,7 +229,7 @@ export default function ContributionModal({ isOpen, onClose, initialAmount }: Co
                 <div className="flex bg-neutral-100 p-1 rounded-xl shrink-0 select-none">
                   <button
                     onClick={() => setActiveTab("financial")}
-                    className={`flex-1 py-2.5 text-center text-xs font-semibold rounded-lg transition-all cursor-pointer outline-none ${
+                    className={`flex-1 py-2.5 text-center text-[11px] sm:text-xs font-semibold rounded-lg transition-all cursor-pointer outline-none ${
                       activeTab === "financial"
                         ? "bg-white text-neutral-900 shadow-sm font-bold"
                         : "text-neutral-500 hover:text-neutral-800"
@@ -239,7 +239,7 @@ export default function ContributionModal({ isOpen, onClose, initialAmount }: Co
                   </button>
                   <button
                     onClick={() => setActiveTab("non-financial")}
-                    className={`flex-1 py-2.5 text-center text-xs font-semibold rounded-lg transition-all cursor-pointer outline-none ${
+                    className={`flex-1 py-2.5 text-center text-[11px] sm:text-xs font-semibold rounded-lg transition-all cursor-pointer outline-none ${
                       activeTab === "non-financial"
                         ? "bg-white text-neutral-900 shadow-sm font-bold"
                         : "text-neutral-500 hover:text-neutral-800"
@@ -502,7 +502,7 @@ export default function ContributionModal({ isOpen, onClose, initialAmount }: Co
                       <label className="text-[10px] text-neutral-400 font-mono uppercase tracking-widest block font-bold">
                         1. Select Contribution Type
                       </label>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {[
                           { id: "clinical", label: "Volunteer Clinical Hours", icon: Stethoscope, desc: "Doctors, dentists, or hygienists giving field hours." },
                           { id: "supplies", label: "Dental/Medical Supplies", icon: Package, desc: "Consumable toothbrushes, paste, or gloves." },

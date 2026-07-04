@@ -33,7 +33,7 @@ export default function EditorControlPanel() {
     clearHistory 
   } = useTextEdit();
   
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"edits" | "history" | "pages">("edits");
