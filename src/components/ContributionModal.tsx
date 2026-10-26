@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PayFastForm, { PAYFAST_MIN_AMOUNT } from "./PayFastForm";
 import { 
   HandHeart, 
   Plus, 
@@ -73,12 +74,6 @@ export default function ContributionModal({ isOpen, onClose, initialAmount }: Co
   const [customAmount, setCustomAmount] = useState<string>("");
   const [isCustomMode, setIsCustomMode] = useState<boolean>(false);
   
-  const [finName, setFinName] = useState("");
-  const [finEmail, setFinEmail] = useState("");
-  const [finCardName, setFinCardName] = useState("");
-  const [finCardNum, setFinCardNum] = useState("");
-  const [finExpiry, setFinExpiry] = useState("");
-  const [finCvv, setFinCvv] = useState("");
   
   // Non-Financial Form States
   const [nonFinType, setNonFinType] = useState<NonFinancialType>("clinical");
@@ -98,22 +93,6 @@ export default function ContributionModal({ isOpen, onClose, initialAmount }: Co
   const calculatedAmount = isCustomMode 
     ? (parseInt(customAmount) || 0)
     : (activeDonationTypeObj.unitPrice * quantity);
-
-  const handleFinSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (calculatedAmount <= 0) {
-      alert("Please specify a valid contribution amount.");
-      return;
-    }
-    
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSuccessMessage(
-        `Thank you, ${finName.split(" ")[0]}! We simulated a secure payment of R${calculatedAmount} ZAR. A tax section-18C certificate and official receipt have been dispatched to ${finEmail}. Your generous partnership helps fuel our mobile trailer loops directly!`
-      );
-    }, 1200);
-  };
 
   const handleNonFinSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -136,12 +115,6 @@ export default function ContributionModal({ isOpen, onClose, initialAmount }: Co
     setQuantity(1);
     setCustomAmount("");
     setIsCustomMode(false);
-    setFinName("");
-    setFinEmail("");
-    setFinCardName("");
-    setFinCardNum("");
-    setFinExpiry("");
-    setFinCvv("");
     setNonFinDesc("");
     setNonFinName("");
     setNonFinEmail("");
@@ -251,7 +224,7 @@ export default function ContributionModal({ isOpen, onClose, initialAmount }: Co
 
                 {/* FINANCIAL FORM VIEW */}
                 {activeTab === "financial" && (
-                  <form onSubmit={handleFinSubmit} className="space-y-6">
+                  <PayFastForm amount={calculatedAmount} className="space-y-6">
                     {/* Types Grid */}
                     <div className="space-y-2">
                       <label className="text-[10px] text-neutral-400 font-mono uppercase tracking-widest block font-bold">
@@ -388,7 +361,7 @@ export default function ContributionModal({ isOpen, onClose, initialAmount }: Co
                           <input
                             type="number"
                             required
-                            min="10"
+                            min="5"
                             placeholder="Enter custom Rand amount..."
                             value={customAmount}
                             onChange={(e) => setCustomAmount(e.target.value)}
@@ -409,89 +382,19 @@ export default function ContributionModal({ isOpen, onClose, initialAmount }: Co
                       </div>
                     </div>
 
-                    {/* Donor Credentials */}
-                    <div className="space-y-3">
-                      <label className="text-[10px] text-neutral-400 font-mono uppercase tracking-widest block font-bold">
-                        3. Donor Information
-                      </label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <input
-                          type="text"
-                          required
-                          placeholder="Your Full Name"
-                          value={finName}
-                          onChange={(e) => setFinName(e.target.value)}
-                          className="w-full bg-neutral-50 border border-neutral-200 focus:border-neutral-900 rounded-xl px-4 py-3 text-xs text-neutral-900 placeholder-neutral-400 outline-none"
-                        />
-                        <input
-                          type="email"
-                          required
-                          placeholder="your.email@domain.com"
-                          value={finEmail}
-                          onChange={(e) => setFinEmail(e.target.value)}
-                          className="w-full bg-neutral-50 border border-neutral-200 focus:border-neutral-900 rounded-xl px-4 py-3 text-xs text-neutral-900 placeholder-neutral-400 outline-none"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Simulated Payment Card fields */}
-                    <div className="border border-neutral-200 p-4 rounded-2xl space-y-3 bg-neutral-50/50">
-                      <span className="text-[10px] text-neutral-400 font-mono uppercase tracking-widest block font-bold flex items-center gap-1">
-                        <CreditCard size={12} className="text-neutral-500" />
-                        Secured Payment Information (Simulator)
-                      </span>
-                      
-                      <div className="space-y-2">
-                        <input
-                          type="text"
-                          required
-                          placeholder="Name on Card"
-                          value={finCardName}
-                          onChange={(e) => setFinCardName(e.target.value)}
-                          className="w-full bg-white border border-neutral-200 focus:border-neutral-900 rounded-xl px-4 py-2.5 text-xs text-neutral-900 placeholder-neutral-400 outline-none"
-                        />
-                        <input
-                          type="text"
-                          required
-                          maxLength={19}
-                          placeholder="Card Number"
-                          value={finCardNum}
-                          onChange={(e) => setFinCardNum(e.target.value)}
-                          className="w-full bg-white border border-neutral-200 focus:border-neutral-900 rounded-xl px-4 py-2.5 text-xs text-neutral-900 font-mono placeholder-neutral-400 outline-none"
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        <input
-                          type="text"
-                          required
-                          maxLength={5}
-                          placeholder="MM/YY"
-                          value={finExpiry}
-                          onChange={(e) => setFinExpiry(e.target.value)}
-                          className="w-full bg-white border border-neutral-200 focus:border-neutral-900 rounded-xl px-4 py-2.5 text-xs text-neutral-900 font-mono placeholder-neutral-400 outline-none text-center"
-                        />
-                        <input
-                          type="password"
-                          required
-                          maxLength={3}
-                          placeholder="CVV"
-                          value={finCvv}
-                          onChange={(e) => setFinCvv(e.target.value)}
-                          className="w-full bg-white border border-neutral-200 focus:border-neutral-900 rounded-xl px-4 py-2.5 text-xs text-neutral-900 font-mono placeholder-neutral-400 outline-none text-center"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Submit button */}
+                    {/* Submit button -> PayFast secure checkout */}
                     <button
                       type="submit"
-                      disabled={isSubmitting}
-                      className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold tracking-wider text-xs uppercase cursor-pointer disabled:opacity-55 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)]"
+                      disabled={calculatedAmount < PAYFAST_MIN_AMOUNT}
+                      className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold tracking-wider text-xs uppercase cursor-pointer disabled:opacity-55 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)]"
                     >
                       <HandHeart size={14} className="animate-pulse" />
-                      <span>{isSubmitting ? "Processing SSL Payment..." : `Sponsor R${calculatedAmount} ZAR Now`}</span>
+                      <span>{calculatedAmount < PAYFAST_MIN_AMOUNT ? `Minimum donation is R${PAYFAST_MIN_AMOUNT}` : `Donate R${calculatedAmount} Now`}</span>
                     </button>
-                  </form>
+                    <p className="text-center text-[10px] text-neutral-400 font-mono flex items-center justify-center gap-1">
+                      <CreditCard size={11} /> You will be redirected to PayFast to pay securely
+                    </p>
+                  </PayFastForm>
                 )}
 
                 {/* NON-FINANCIAL FORM VIEW */}
