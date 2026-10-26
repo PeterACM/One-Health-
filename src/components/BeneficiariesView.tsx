@@ -10,13 +10,13 @@ import EditableText from "./EditableText";
 
 export default function BeneficiariesView() {
   return (
-    <div className="space-y-16 py-8">
+    <div className="space-y-16 py-8 ">
       {/* Page Intro header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <h2 className="font-display font-medium text-3xl sm:text-4xl text-neutral-900 tracking-tight leading-tight">
+        <h2 className="font-display font-medium text-3xl sm:text-4xl text-white tracking-tight leading-tight">
           <EditableText id="beneficiaries.title" element="span">Communities We serve</EditableText>
         </h2>
-        <EditableText id="beneficiaries.summary.intro" className="text-neutral-600 text-sm leading-relaxed text-balance font-medium">
+        <EditableText id="beneficiaries.summary.intro" className="text-neutral-300 text-sm leading-relaxed text-balance font-medium">
           {BENEFICIARIES_SUMMARY.intro}
         </EditableText>
       </div>
