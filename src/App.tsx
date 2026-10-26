@@ -89,7 +89,7 @@ export default function App() {
 
   return (
     <TextEditProvider>
-      <div className="relative min-h-screen bg-white font-sans text-neutral-800 overflow-x-hidden selection:bg-neutral-200 selection:text-neutral-900">
+      <div className={`relative min-h-screen ${activeTab === "beneficiaries" ? "bg-black" : "bg-white"} font-sans text-neutral-800 overflow-x-hidden selection:bg-neutral-200 selection:text-neutral-900`}>
       
       {/* 1. Animated drifting elements flowing in background */}
       <BackgroundFlow />
