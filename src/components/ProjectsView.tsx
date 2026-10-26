@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from "react";
+import PayFastForm, { PAYFAST_MIN_AMOUNT } from "./PayFastForm";
 import { PROJECT_LIST } from "../data";
 import { Project } from "../types";
 import * as Icons from "lucide-react";
@@ -13,7 +14,7 @@ import EditableText from "./EditableText";
 interface ProjectsViewProps {
   selectedProjectId: string | null;
   onSelectProject: (id: string | null) => void;
-  onDonateSubmit: (projectTitle: string, amount: number) => void;
+  onDonateSubmit?: (projectTitle: string, amount: number) => void;
   onVolunteerClick: (projectTitle: string) => void;
 }
 
@@ -28,9 +29,6 @@ export default function ProjectsView({
   // State for donation calculator inside detail template
   const [customAmount, setCustomAmount] = useState<string>("250");
   const [selectedPill, setSelectedPill] = useState<number>(250);
-  const [donorName, setDonorName] = useState("");
-  const [donorEmail, setDonorEmail] = useState("");
-  const [donationSuccessMsg, setDonationSuccessMsg] = useState<string | null>(null);
 
   // Dynamic filter lists
   const categories = ["All", "Healthcare & Oral", "Creation Care", "International", "Faith & Support"];
@@ -69,23 +67,6 @@ export default function ProjectsView({
     }
   };
 
-  const handleDonationSubmit = (e: React.FormEvent, project: Project) => {
-    e.preventDefault();
-    const amountNum = parseInt(customAmount);
-    if (isNaN(amountNum) || amountNum <= 0) {
-      alert("Please specify a valid donation amount (Rands)");
-      return;
-    }
-    // Call props function
-    onDonateSubmit(project.title, amountNum);
-    setDonationSuccessMsg(`Successfully simulated direct donation of R${amountNum} to ${project.title}. Thank you for playing an active role in healing communities!`);
-    
-    // Clear success message after 5 seconds
-    setTimeout(() => {
-      setDonationSuccessMsg(null);
-    }, 8500);
-  };
-
   // If a specific project is selected, render Page 4a (Individual Project Template)
   if (selectedProjectId) {
     const project = PROJECT_LIST.find((p) => p.id === selectedProjectId);
@@ -100,7 +81,6 @@ export default function ProjectsView({
         <button
           onClick={() => {
             onSelectProject(null);
-            setDonationSuccessMsg(null);
           }}
           className="flex items-center gap-2 text-neutral-800 hover:text-neutral-950 text-xs font-mono uppercase tracking-widest cursor-pointer outline-none group border border-neutral-200 bg-white px-4 py-2.5 rounded-xl transition-all shadow-sm"
         >
@@ -184,7 +164,7 @@ export default function ProjectsView({
             </div>
           </div>
 
-          {/* Right Block: Live Donation Checker simulating Secure Gateways */}
+          {/* Right Block: Secure PayFast donation */}
           <div className="lg:col-span-5 space-y-6">
             <div className="border border-neutral-200 bg-neutral-50 p-6 sm:p-8 rounded-3xl relative overflow-hidden shadow-sm">
               <h3 className="font-display font-medium text-neutral-950 text-lg sm:text-xl mb-2 font-bold">
@@ -192,16 +172,11 @@ export default function ProjectsView({
               </h3>
               
               <p className="text-neutral-600 text-xs leading-relaxed mb-6">
-                Your direct contribution is allocated fully to the resources required by <strong className="text-neutral-900 font-semibold">{project.title}</strong> on field trips. Safe checkout gateway simulation.
+                Your direct contribution is allocated fully to the resources required by <strong className="text-neutral-900 font-semibold">{project.title}</strong> on field trips. You will be redirected to PayFast to pay securely.
               </p>
 
-              {donationSuccessMsg ? (
-                <div className="p-4 bg-white border border-dashed border-neutral-300 text-neutral-800 text-xs rounded-2xl flex items-start gap-3 animate-fadeIn font-medium">
-                  <Icons.PartyPopper size={20} className="shrink-0 text-neutral-800 animate-bounce" />
-                  <p>{donationSuccessMsg}</p>
-                </div>
-              ) : (
-                <form onSubmit={(e) => handleDonationSubmit(e, project)} className="space-y-4">
+              {(
+                <PayFastForm amount={parseFloat(customAmount) || 0} itemSuffix={project.title} className="space-y-4">
                   
                   {/* Amount grid */}
                   <div className="space-y-2">
@@ -234,7 +209,7 @@ export default function ProjectsView({
                     <input
                       type="number"
                       required
-                      min="10"
+                      min="5"
                       value={customAmount}
                       onChange={(e) => handleCustomAmountChange(e.target.value)}
                       placeholder="Specify custom amount..."
@@ -242,29 +217,10 @@ export default function ProjectsView({
                     />
                   </div>
 
-                  {/* Donor baseline inputs */}
-                  <div className="space-y-3 pt-2">
-                    <input
-                      type="text"
-                      required
-                      placeholder="Your Full Name"
-                      value={donorName}
-                      onChange={(e) => setDonorName(e.target.value)}
-                      className="w-full bg-white border border-neutral-200 focus:border-neutral-900 rounded-xl px-4 py-3 text-xs text-neutral-900 placeholder-neutral-400 outline-none"
-                    />
-                    <input
-                      type="email"
-                      required
-                      placeholder="you@address.com"
-                      value={donorEmail}
-                      onChange={(e) => setDonorEmail(e.target.value)}
-                      className="w-full bg-white border border-neutral-200 focus:border-neutral-900 rounded-xl px-4 py-3 text-xs text-neutral-900 placeholder-neutral-400 outline-none"
-                    />
-                  </div>
-
                   <button
                     type="submit"
-                    className="w-full outline-none bg-emerald-600 border border-emerald-600 text-white hover:bg-emerald-700 hover:shadow-[0_0_20px_rgba(16,185,129,0.45)] font-bold tracking-wider text-xs uppercase px-6 py-3.5 rounded-xl cursor-pointer transition-all active:scale-[0.98] duration-300 flex items-center justify-center gap-2 shadow-sm"
+                    disabled={(parseFloat(customAmount) || 0) < PAYFAST_MIN_AMOUNT}
+                    className="w-full disabled:opacity-55 disabled:cursor-not-allowed outline-none bg-emerald-600 border border-emerald-600 text-white hover:bg-emerald-700 hover:shadow-[0_0_20px_rgba(16,185,129,0.45)] font-bold tracking-wider text-xs uppercase px-6 py-3.5 rounded-xl cursor-pointer transition-all active:scale-[0.98] duration-300 flex items-center justify-center gap-2 shadow-sm"
                   >
                     <Icons.Lock size={12} className="text-white fill-current" />
                     <span>
@@ -273,9 +229,9 @@ export default function ProjectsView({
                   </button>
 
                   <div className="text-center text-[10px] text-neutral-400 font-mono">
-                    SECURED LAYER SYSTEM (18C COMPLIANT)
+                    SECURE PAYMENT BY PAYFAST
                   </div>
-                </form>
+                </PayFastForm>
               )}
             </div>
 
