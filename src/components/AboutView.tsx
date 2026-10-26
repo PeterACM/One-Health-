@@ -31,12 +31,6 @@ import forwardDurbanPng from "../assets/Forward_Durban.png";
 import acffPng from "../assets/ACFF.png";
 // @ts-ignore
 import iKhetheloPng from "../assets/iKhethelo.png";
-// @ts-ignore
-import lesleyPng from "../assets/Dr_Naidoo.png";
-// @ts-ignore
-import oceanPng from "../assets/ocean_naidoo.png";
-// @ts-ignore
-import lauraPng from "../assets/IMG_8513.png";
 
 interface AboutViewProps {
   onLearnMoreProjects?: () => void;
@@ -349,12 +343,12 @@ export default function AboutView({ onLearnMoreProjects, onDonate }: AboutViewPr
 
       {/* TEAM SECTION */}
       {activeSubTab === "team" && (
-        <div className="space-y-12 animate-fadeIn text-left max-w-5xl mx-auto">
+        <div className="space-y-12 animate-fadeIn text-left max-w-5xl mx-auto bg-black rounded-3xl p-6 sm:p-10">
           <div className="text-center max-w-2xl mx-auto space-y-4 mb-8">
-            <h2 className="font-display font-medium text-3xl sm:text-4xl text-neutral-900 tracking-tight">
+            <h2 className="font-display font-medium text-3xl sm:text-4xl text-white tracking-tight">
               <EditableText id="about.team.header" element="span">Meet Our Team Members</EditableText>
             </h2>
-            <p className="text-neutral-600 text-sm leading-relaxed">
+            <p className="text-neutral-300 text-sm leading-relaxed">
               <EditableText id="about.team.subheader" element="span">Meet our clinicians and leaders directing healthcare and development operations on the ground across South Africa.</EditableText>
             </p>
           </div>
@@ -365,13 +359,11 @@ export default function AboutView({ onLearnMoreProjects, onDonate }: AboutViewPr
               const mId = member.name.replace(/\s+/g, "_");
               
               // Attach images, specialty tags, and credentials
-              let image = lesleyPng;
-              let tags: string[] = [];
+                            let tags: string[] = [];
               let degrees: string[] = [];
               let quote = "";
 
               if (member.name === "Lesley Naidoo") {
-                image = lesleyPng;
                 tags = ["Public Health", "Clinical Dentistry", "Advocate"];
                 degrees = [
                   "PhD Candidate in Public Health (UKZN)",
@@ -383,7 +375,6 @@ export default function AboutView({ onLearnMoreProjects, onDonate }: AboutViewPr
                 ];
                 quote = "True restoration begins when clinical quality, emotional support, and township development align.";
               } else if (member.name === "Ocean Naidoo") {
-                image = oceanPng;
                 tags = ["Neurophysiology", "Diagnostics", "Sleep Science"];
                 degrees = [
                   "Clinical Neurophysiologist Specialist",
@@ -393,7 +384,6 @@ export default function AboutView({ onLearnMoreProjects, onDonate }: AboutViewPr
                 ];
                 quote = "Our mission is to democratize advanced nerve and sleep diagnostics to community clinical layers.";
               } else {
-                image = lauraPng;
                 tags = ["Cardiovascular", "Lecturer", "HPCSA Ex-Board"];
                 degrees = [
                   "Certified Cardiovascular Perfusionist Specialist",
@@ -404,35 +394,20 @@ export default function AboutView({ onLearnMoreProjects, onDonate }: AboutViewPr
                 quote = "Patient safety, standardizing perfusion training, and building clinical resilience drive my work.";
               }
 
-              const extendedMember = { ...member, image, tags, degrees, quote };
+              const extendedMember = { ...member, tags, degrees, quote };
 
               return (
                 <ScrollReveal
                   key={i}
                   delayMs={i * 100}
-                  className="bg-white border border-neutral-200 hover:border-rose-500/35 rounded-3xl overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1.5 flex flex-col h-[430px]"
+                  className="bg-white border border-neutral-200 hover:border-rose-500/35 rounded-3xl overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1.5 flex flex-col h-[340px]"
                 >
-                  {/* Card top - Photo Container */}
-                  <div className="relative h-56 w-full overflow-hidden shrink-0 bg-neutral-100">
-                    <img
-                      src={image}
-                      alt={member.name}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                    />
-                    
-                    {/* Shadow overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent opacity-60 group-hover:opacity-85 transition-opacity duration-300" />
-                    
-                    {/* Role Tag on top of image */}
-                    <span className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm text-neutral-900 border border-white/20 font-mono font-bold text-[9px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm">
-                      {member.role.split("&")[0].split("Lecturer")[0].trim()}
-                    </span>
-                  </div>
-
                   {/* Card middle - Info */}
                   <div className="p-5 flex-1 flex flex-col justify-between text-left">
                     <div className="space-y-2">
+                      <span className="inline-block bg-rose-50 text-rose-600 border border-rose-100 font-mono font-bold text-[9px] uppercase tracking-wider px-2.5 py-1 rounded-full">
+                        {member.role.split("&")[0].split("Lecturer")[0].trim()}
+                      </span>
                       <h3 className="font-display font-bold text-neutral-900 text-lg leading-tight group-hover:text-rose-600 transition-colors duration-300">
                         {member.name}
                       </h3>
@@ -483,26 +458,8 @@ export default function AboutView({ onLearnMoreProjects, onDonate }: AboutViewPr
                   initial={{ opacity: 0, scale: 0.95, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  className="relative w-full max-w-3xl bg-white border border-neutral-200 rounded-3xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col md:flex-row text-left z-10"
+                  className="relative w-full max-w-2xl bg-white border border-neutral-200 rounded-3xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col text-left z-10"
                 >
-                  {/* Left panel - Image */}
-                  <div className="w-full md:w-5/12 bg-neutral-100 relative h-64 md:h-auto overflow-hidden shrink-0 border-r border-neutral-100">
-                    <img
-                      src={selectedTeamMember.image}
-                      alt={selectedTeamMember.name}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover object-top"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/10 to-transparent opacity-60 md:hidden" />
-                    
-                    {/* Quote inside Image panel */}
-                    <div className="absolute bottom-5 left-5 right-5 text-white hidden md:block">
-                      <p className="font-display italic text-xs leading-relaxed text-neutral-200 border-l-2 border-rose-500 pl-3">
-                        "{selectedTeamMember.quote}"
-                      </p>
-                    </div>
-                  </div>
-
                   {/* Right panel - Scrollable details */}
                   <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6 flex flex-col justify-between">
                     {/* Close button inside panel */}
@@ -525,6 +482,10 @@ export default function AboutView({ onLearnMoreProjects, onDonate }: AboutViewPr
                           {selectedTeamMember.role}
                         </p>
                       </div>
+
+                      <p className="font-display italic text-xs leading-relaxed text-neutral-600 border-l-2 border-rose-500 pl-3">
+                        "{selectedTeamMember.quote}"
+                      </p>
 
                       {/* Bio paragraphs */}
                       <div className="space-y-3">
